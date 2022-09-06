@@ -72,8 +72,9 @@ document.querySelector('.check').addEventListener('click', function () {
         document.getElementById('question').innerHTML = currentQuestion
         document.getElementById('category').innerHTML = currentCategory
         console.log(currentAnswer);}, 3000);
-        if (currentScore > tst){
-          currentScore = tst;
+        if (currentScore >= tst){
+          playerTopScore++;
+          tst.innerHTML = playerTopScore;
         }
     } else if (currentGuess != currentAnswer){
       playerMistakesLeft--;
@@ -101,6 +102,9 @@ getTrivia().then((data) => {
 
       let category = data.category.title
       document.getElementById('category').innerHTML = category
+
+      mistakesLeft.innerHTML = 1;
+      currentScore.innerHTML = 0;
   
    });
   })
