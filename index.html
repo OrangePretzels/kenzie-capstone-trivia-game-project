@@ -21,21 +21,29 @@
 
     <h1>Capstone Trivia Project <p class="topscoretext"> Leaderboard : <span class="topscore">0</span></p></h1>
   
+    <!-- <button class="startNewGame">Click Here To Start a Game!</button> -->
+  
     <main>
 
       <section class="left">
+
         <h2>Question :</h2>
-        <h2 id="question">Placeholder Question</h2>
-        <h2>Category/Hint : </h2><h2 id="category">Placeholder Category</h2>
+        <h2 id="question">Waiting for user to Start</h2>
+
+        <h2>Category/Hint : </h2>
+        <h2 id="category"></h2>
+
         <input type="text" class="guess" placeholder="Type your answer here!" id='myInput'/>
+
         <button class="check">Guess!</button>
         &nbsp;&nbsp;&nbsp;
-        <button class="again">Retry!</button>
+        <button class="retry">Retry!</button>
+
       </section>
 
       <section class="right">
         <p class="message">Type your answer in the box</p>
-        <p class="scoretext"> Mistakes Left : <span class="score">3</span></p>
+        <p class="scoretext"> Mistakes Left : <span class="score">1</span></p>
         <p class="highscoretext"> Current Score : <span class="currentscore">0</span></p>
       </section>
 
@@ -52,7 +60,7 @@
 
 
 
-
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="code.js"></script>
   </body>
 </html>

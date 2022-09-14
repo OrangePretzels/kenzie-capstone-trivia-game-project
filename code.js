@@ -1,164 +1,87 @@
 let playerTopScore = 0;
+const topScoreText = document.querySelector(".topscore")
+topScoreText.innerHTML = playerTopScore;
+
 let playerMistakesLeft = 1;
+const mistakesLeftText = document.querySelector(".score")
+mistakesLeftText.innerHTML = playerMistakesLeft
+
 let playerCurrentScore = 0;
-let hiddenAnswer = ''
+const currentScoreText = document.querySelector(".currentscore")
+currentScoreText.innerHTML = playerCurrentScore
 
-const tst = document.querySelector(".topscore")
-tst.innerHTML = playerTopScore;
+let hiddenAnswer = '';
 
-const mistakesLeft = document.querySelector(".score")
-mistakesLeft.innerHTML = playerMistakesLeft
+const checkButton = document.querySelector('.check')
+const retryButton = document.querySelector('.retry')
 
-const currentScore = document.querySelector(".currentscore")
-currentScore.innerHTML = playerCurrentScore
+let questionText = document.querySelector('#question')
+questionText.innerHTML = ''
 
-const button = document.querySelector('.check')
-const retryButton = document.querySelector('.again')
+let categoryText = document.querySelector('#category')
+categoryText.innerHTML = ''
 
 const displayMessage = function (message) {
     document.querySelector('.message').textContent = message;
   };
 
-
-const url = `https://jservice.kenzie.academy/api/random-clue`
-
-
-
-async function getTrivia(){
-    let response = await fetch(url);
-    let data = response.json();
-    return data;
+function generateRandomColor(){
+    var randomColor = '#'+Math.floor(Math.random()*16777215).toString(16);
+    return randomColor;
 }
 
+const triviaGenerator = async () => {
+  const res = await axios.get(`https://jservice.kenzie.academy/api/random-clue`)
+  const question = res.data.question;
+  const category = res.data.category.title;
+  hiddenAnswer = res.data.answer.toLowerCase().replace("'","").replace('"','');
+  questionText.innerHTML = question;
+  categoryText.innerHTML = category;
+  console.log(hiddenAnswer)
+}
 
+console.log(triviaGenerator())
 
-
-let question = getTrivia().then((data) => {
-  let currentQuestion = data.question
-  let currentCategory = data.category.title
-  let currentAnswer = data.answer.toLowerCase().replace("'","").replace('"','')
-  let currentData = data;
-
-  document.getElementById('question').innerHTML = currentQuestion
-  document.getElementById('category').innerHTML = currentCategory
-
-  console.log(currentAnswer + ' (***FIRST ANSWER ONLY***) ');
-  // console.log(currentData); 
-  let myButton = document.querySelector('.check')
-
-
-getTrivia().then((data) => {
-  myButton.addEventListener('click', function () {
+checkButton.addEventListener('click', function(){
 
   const currentGuess = (document.querySelector('.guess').value.toLowerCase().replace("'","").replace('"',''));
-  // console.log(currentGuess);
-      
+
   if (!currentGuess) {
-      displayMessage('You did not type anything')
+    displayMessage('You did not type anything')
+  } 
 
-    } else if(currentGuess === currentAnswer){
-      playerCurrentScore++;
-      currentScore.innerHTML = playerCurrentScore;
-      document.getElementById('question').innerHTML = currentQuestion
-      document.getElementById('category').innerHTML = currentCategory
-      displayMessage('Correct')
+  else if(currentGuess === hiddenAnswer){
+    playerCurrentScore++;
+    currentScoreText.innerHTML = playerCurrentScore
+    triviaGenerator();
+    displayMessage('Correct')
+      
+      if (playerCurrentScore >= playerTopScore){
+        topScoreText.innerHTML = playerCurrentScore;
+        playerTopScore = playerCurrentScore;
+        setTimeout(()=>{
+          topScoreText.style.color = generateRandomColor();
+        },1000)
+      }
+  } 
 
-      setTimeout(() => {getTrivia().then(data)
-        displayMessage('Keep it up!')
-        let currentQuestion = data.question
-        let currentCategory = data.category.title
-        let currentAnswer = data.answer.toLowerCase().replace("'","").replace('"','')
-        document.getElementById('question').innerHTML = currentQuestion
-        document.getElementById('category').innerHTML = currentCategory
-        console.log(currentAnswer);}, 3000);
-
-        if (currentScore >= tst){
-          playerTopScore++;
-          tst.innerHTML = playerTopScore;
-        }
-
-    } else if (currentGuess != currentAnswer){
-      playerMistakesLeft--;
-      mistakesLeft.innerHTML = playerMistakesLeft
-      button.disabled = true
-      displayMessage('You Lose!');
-      setTimeout(() => {displayMessage('Click Retry to start over')}, 1000);
-    }
-
-})
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-let myInput = document.querySelector('#myInput')
-
-myInput.addEventListener('keyup', function (e){
-  if (e.keyCode === 13){
-    e.preventDefault();
-    document.querySelector('.check').click();
+  else if (currentGuess != hiddenAnswer) {
+    playerMistakesLeft--;
+    mistakesLeftText.innerHTML = playerMistakesLeft
+    checkButton.disabled = true
+    displayMessage('You Lose!');
+    setTimeout(() => {displayMessage('Click Retry to start over')}, 1000);
   }
+
+
 })
 
-getTrivia().then((data) => {
-      document.querySelector('.again').addEventListener('click', function () {
-      button.disabled = false
-      playerMistakesLeft = 1;
-      score = 1;
-      displayMessage('Try for a better score!');
-      document.querySelector('.score').textContent = score;
- 
-      let clues = data.question
-      document.getElementById('question').innerHTML = clues
-
-      hiddenAnswer = data.answer.toLowerCase().replace("'","").replace('"','')
-      console.log(hiddenAnswer)
-
-      let category = data.category.title
-      document.getElementById('category').innerHTML = category
-
-      mistakesLeft.innerHTML = 1;
-      currentScore.innerHTML = 0;
-      // onfocus="this.value=''"
-      myInput.value = ''
-  
-   });
-  })
+retryButton.addEventListener('click', function(){
+  checkButton.disabled = false
+  playerMistakesLeft = 1;
+  playerCurrentScore = 0;
+  currentScoreText.innerHTML = playerCurrentScore
+  mistakesLeftText.innerHTML = playerMistakesLeft
+  displayMessage('Try for a better score!');
+  triviaGenerator();
 })
-
-
-
-// setTimeout(()=>{
-//   console.log('3 second delay');
-// }, 3000);
