@@ -82,10 +82,11 @@ h1 {
   }
  
   .message{
-    color: rgb(155, 24, 116);
+    color: magenta;
     text-align: center;
-    
+    /* border: solid 1px orangered; */
   }
+
   .scoretext{
     text-align: center;
   }
@@ -97,4 +98,10 @@ h1 {
 
   #question{
     text-align: center;
+  }
+
+  .topscore,
+  .score,
+  .currentscore{
+    color: magenta;
   }
